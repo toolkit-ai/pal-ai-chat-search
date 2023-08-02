@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "declaration": true,
+    "ignoreDeprecations": "5.0",
+    "module": "commonjs",
+    "outDir": "dist",
+    "incremental": true,
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}
