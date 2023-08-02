@@ -1,19 +1,33 @@
 {
+  "env": {
+    "node": true
+  },
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "import"],
+  "parser": "@typescript-eslint/parser",
   "extends": [
-    "airbnb-base",
-    "airbnb-typescript/base",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "prettier"
   ],
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
-  "ignorePatterns": [
-    "dist/**/*",
-    "*.mjs"
-  ],
   "rules": {
-    "@typescript-eslint/dot-notation": "off",
-    "no-console": "off",
-    "import/prefer-default-export": "off"
+    "react/display-name": "off",
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc"
+        },
+        "groups": ["builtin", "external", "internal"]
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "18"
+    }
   }
 }

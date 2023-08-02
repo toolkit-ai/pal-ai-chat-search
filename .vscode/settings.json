@@ -9,8 +9,5 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file"
   },
-  "eslint.validate": [
-    "javascript",
-    "typescript"
-  ]
+  "eslint.validate": ["javascript", "typescript"]
 }

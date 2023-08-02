@@ -1,37 +1,55 @@
-import { useAuth } from '@clerk/nextjs';
 import axios, { type AxiosRequestConfig } from 'axios';
 import { SSE } from 'sse.js';
 import { JsonValue } from 'type-fest';
 
-if (!process.env.NEXT_PUBLIC_PAL_API) {
-  throw new Error('NEXT_PUBLIC_PAL_API is not defined');
+import { DEFAULT_PAL_API_OPTIONS, PalApiOptions } from './palApiOptions';
+
+type DecodedOptions = PalApiOptions & {
+  baseURL: string;
+  authHeaders: { Authorization: string } | { 'x-api-key': string };
+};
+
+async function decodeOptions(options: PalApiOptions): Promise<DecodedOptions> {
+  let authHeaders;
+  if ('getToken' in options) {
+    const token = await options.getToken();
+    if (token === null) {
+      throw Error('getToken failed');
+    }
+    authHeaders = { Authorization: `Bearer ${token}` };
+  } else {
+    authHeaders = { 'x-api-key': options.apiKey };
+  }
+
+  return {
+    ...DEFAULT_PAL_API_OPTIONS,
+    ...options,
+    authHeaders,
+  };
 }
 
-const apiClient = axios.create({ baseURL: process.env.NEXT_PUBLIC_PAL_API });
-
-export function usePalApiRequest() {
-  const { getToken } = useAuth();
+export function usePalApiRequest(options: PalApiOptions) {
   return async <T = JsonValue>(config: AxiosRequestConfig) => {
-    const token = await getToken();
-    const response = await apiClient<T>({
+    const { baseURL, authHeaders } = await decodeOptions(options);
+    const response = await axios.request<T>({
+      baseURL,
       ...config,
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...authHeaders,
       },
     });
     return response.data;
   };
 }
 
-export function usePalApiSSERequest() {
-  const { getToken } = useAuth();
+export function usePalApiSSERequest(options: PalApiOptions) {
   return async ({ url, data }: { url: string; data: unknown }) => {
-    const token = await getToken();
-    return new SSE(process.env.NEXT_PUBLIC_PAL_API + url, {
+    const { baseURL, authHeaders } = await decodeOptions(options);
+    return new SSE(baseURL + url, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        ...authHeaders,
       },
       payload: JSON.stringify(data),
     });

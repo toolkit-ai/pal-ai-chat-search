@@ -1,12 +1,20 @@
 {
   "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
+    "lib": ["dom", "es2015"],
     "baseUrl": "src",
     "declaration": true,
+    "declarationMap": true,
+    "forceConsistentCasingInFileNames": true,
     "ignoreDeprecations": "5.0",
-    "module": "commonjs",
-    "outDir": "dist",
     "incremental": true,
+    // NOTE(jyc) This doesn't seem to work in NextJS. I've tried
+    // `"inlineSourceMap": true` too.
+    "sourceMap": true,
+    "outDir": "dist",
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules"]
