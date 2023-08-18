@@ -1,0 +1,30 @@
+name: 'Check pull request'
+on:
+  pull_request:
+jobs:
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Set PNPM Credentials
+        run: pnpm config set "//registry.npmjs.org/:_authToken" "${NODE_AUTH_TOKEN}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: pnpm
+      - name: Install
+        run: pnpm install
+      - name: Check formatting
+        run: pnpm format
+      - name: Check linting
+        run: pnpm lint
+      - name: Check types
+        run: pnpm typecheck
