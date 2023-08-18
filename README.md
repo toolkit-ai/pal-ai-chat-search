@@ -17,6 +17,7 @@ npm install @heypal/pal-ai-chat-search
 ```
 
 ```tsx
+import React, { useRef } from 'react';
 import { useChat } from '@heypal/pal-ai-chat-search';
 
 const Chat = () => {
